@@ -44,10 +44,15 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
-// Serve React app for all other routes in production
+// Serve React app for all other routes in production (must be last)
 if (process.env.NODE_ENV === 'production') {
-    app.get('/*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+    app.use((req, res, next) => {
+        // Only serve index.html for GET requests that aren't API calls
+        if (req.method === 'GET' && !req.path.startsWith('/api')) {
+            res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+        } else {
+            next();
+        }
     });
 }
 
