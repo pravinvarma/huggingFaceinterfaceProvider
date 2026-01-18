@@ -1,0 +1,26 @@
+services:
+  # Backend API
+  - type: web
+    name: huggingface-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: HF_TOKEN
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+  # Frontend (Static Site)
+  - type: web
+    name: huggingface-frontend
+    env: static
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: ./client/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: huggingface-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
