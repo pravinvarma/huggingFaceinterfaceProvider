@@ -8,8 +8,10 @@ function App() {
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef(null);
 
-  // Use environment variable for API URL, fallback to localhost for development
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  // Use environment variable for API URL
+  // In production (Render), use same domain. In development, use localhost:3000
+  const API_URL = import.meta.env.VITE_API_URL ||
+                  (import.meta.env.PROD ? '' : 'http://localhost:3000');
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
